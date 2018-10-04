@@ -1,0 +1,50 @@
+#include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <mpi.h>
+
+int main(int argc, char **argv){
+
+  //Compile the code with:      mpicc -o mpi mpi.c
+  //Run the code with:          mpiexec -n 4 ./mpi
+
+  int x = 5;
+  
+  //Initialize the MPI process
+  MPI_Init(&argc, &argv);
+
+  //Found the rank and size of the MPI process
+  int rank, size;
+  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+  MPI_Comm_size(MPI_COMM_WORLD, &size);
+
+  MPI_Status fun;
+  
+  if(rank == 0) //rank is 0
+    {
+      //Parameters(data being sent, quantity of data being sent,MPI_dataType,where I am sending to, Tag)
+      MPI_Send(&x,1,MPI_INT,1,999,MPI_COMM_WORLD); //send to 1
+
+      //Parameters(data being sent, quantity of data being sent,MPI_dataType,where I am sending to, Tag, Status)
+      MPI_Recv(&x,1,MPI_INT,size-1,999,MPI_COMM_WORLD,&fun);                                //receive from  5
+      
+      printf("Indicates that we sent and received \n");
+    }
+  else if(rank == size - 1) //rank is edge case
+    {
+      MPI_Send(&x,1,MPI_INT,0,999,MPI_COMM_WORLD);    //send to 0
+
+      MPI_Recv(&x,1,MPI_INT,rank-1,999,MPI_COMM_WORLD,&fun);  
+    }
+  else //rank is in the middle
+    {
+      MPI_Send(&x,1,MPI_INT,rank+1,999,MPI_COMM_WORLD);
+
+      MPI_Recv(&x,1,MPI_INT,rank-1,999,MPI_COMM_WORLD,&fun);
+    }
+
+  //Finalize the MPI process
+  MPI_Finalize();
+
+  return 0;
+}
