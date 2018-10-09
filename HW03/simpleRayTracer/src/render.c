@@ -36,9 +36,9 @@ void renderKernel(const int NI,
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
 
-  //for(int J=rank*NJ/size; J<((rank+1)*NJ/size); ++J){ this is correct for Q5
+  for(int J=rank*NJ/size; J<((rank+1)*NJ/size); ++J){// this is correct for Q5
 
-  for(int J = 0; J < NJ; ++J){
+      //for(int J=0;J<NJ;++J){
     
     for(int I=0;I<NI;++I)  //Inner loop is left unchanged
       {
@@ -140,5 +140,6 @@ void renderKernel(const int NI,
     }  
   }
 
-  //MPI_Barrier(MPI_COMM_WORLD); //Question 5.b
+  //Question 5.b
+  MPI_Barrier(MPI_COMM_WORLD);
 }

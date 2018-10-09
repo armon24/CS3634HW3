@@ -10,9 +10,14 @@
 //   ffmpeg -y -i image_%05d.ppm -pix_fmt yuv420p foo.mp4
 
 int main(int argc, char *argv[]){
-  
-  int rank = 0;
-  int size = 1;
+
+  //Q4.c
+  MPI_Init(&argc, &argv);
+
+  //Q4.d
+  int rank, size;
+  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+  MPI_Comm_size(MPI_COMM_WORLD, &size);
   
   initTimer();
   
@@ -100,19 +105,39 @@ int main(int argc, char *argv[]){
 		 img);
 
 
-    //Q4 and Q5: All communication between threads should go here:
+    //Q6a: All communication between threads should go here:
+
+    //SUPPLEMENTARY MATERIALS FROM RENDER.C
+    //img[(I + (NJ-1-J)*NI)*3 + 0] = (unsigned char)min(  c.red*255.0f, 255.0f);
+    //img[(I + (NJ-1-J)*NI)*3 + 1] = (unsigned char)min(c.green*255.0f, 255.0f);
+    //img[(I + (NJ-1-J)*NI)*3 + 2] = (unsigned char)min( c.blue*255.0f, 255.0f);
+
+    //MPI_Buffer buff  = (unsigned char*) calloc(3*WIDTH*HEIGHT, sizeof(char));
+    MPI_Buffer buff  = (unsigned char*) malloc(3*WIDTH*HEIGHT * sizeof(char));
+    MPI_Status stat;
+    
+    if(rank == 0)
+    {
+      for(int i = 0; i < size; i++)
+	{
+	  //for(int J=rank*NJ/size; J<((rank+1)*NJ/size); ++J)
+	  
+	  MPI_Recv(buff+,,MPI_UNSIGNED_CHAR,size-1,999,MPI_COMM_WORLD,&stat); //may be missing middle cases bc we only receive from 3 
+	}
+      
+      //Parameters(data being received, quantity of data being sent,MPI_dataType,where I am sending to, Tag)
+	
+     
+    }
+    else
+      {
+	//Parameters(data being sent, quantity of data being sent,MPI_dataType,where I am sending to, Tag, Status)
+	MPI_Send(img,1,MPI_UNSIGNED_CHAR, 0, 999, MPI_COMM_WORLD);
+      }
+
+    //MPI_Gather would be used to solve the extra credit. It  allows us to do the same function as MPI_Reduce but for unsigned character data types
  
-
-    //Q4.c
-    MPI_Init(&argc, &argv);
-
-    //Q5.c
-    int rank, size;
-    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-    MPI_Comm_size(MPI_COMM_WORLD, &size);
-
-    //Q4.c
-    MPI_Finalize();
+     
 
     //...........................................................
      
@@ -148,33 +173,25 @@ int main(int argc, char *argv[]){
 
     // write image as ppm format file
     
-    //Q6: modifications to the file generation should go here:
+    //Q6.c: modifications to the file generation should go here:
 
 
-    //SUPPLEMENTARY MATERIALS FROM RENDER.C
-    //img[(I + (NJ-1-J)*NI)*3 + 0] = (unsigned char)min(  c.red*255.0f, 255.0f);
-    //img[(I + (NJ-1-J)*NI)*3 + 1] = (unsigned char)min(c.green*255.0f, 255.0f);
-    //img[(I + (NJ-1-J)*NI)*3 + 2] = (unsigned char)min( c.blue*255.0f, 255.0f);
+
+
+
+
     
-    //if(rank == 0)
-    {
-      //Parameters(data being sent, quantity of data being sent,MPI_dataType,where I am sending to, Tag)
-
-      //MPI_Send(&x,1,MPI_INT,1,999,MPI_COMM_WORLD); //send to 1
-      //MPI_SEND(&pixel, 1, MPI_UNSIGNED_CHAR, (I + (NJ-1-J)*NI)*3 + rank), 999, MPI_COMM_WORLD);
-
-      //Parameters(data being sent, quantity of data being sent,MPI_dataType,where I am sending to, Tag, Status)
-    //  MPI_Recv(&x,1,MPI_INT,size-1,999,MPI_COMM_WORLD,&fun); 
-    //}
- 
     //........................................................
     
     sprintf(fileName, "images/image_%05d_rk%d.ppm", thetaId,rank);
-    saveppm(fileName, img, WIDTH, HEIGHT);
+    saveppm(fileName, buff, WIDTH, HEIGHT); //changes img to buff
 
   }
   
   free(img);
+
+  //Q4.c
+  MPI_Finalize();
   
   return 0;
 }
