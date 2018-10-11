@@ -105,7 +105,7 @@ int main(int argc, char *argv[]){
 		 img);
 
 
-    //Q6a: All communication between threads should go here:
+    //Q6a and Q6b: All communication between threads should go here:
 
     //SUPPLEMENTARY MATERIALS FROM RENDER.C
     //img[(I + (NJ-1-J)*NI)*3 + 0] = (unsigned char)min(  c.red*255.0f, 255.0f);
@@ -113,33 +113,32 @@ int main(int argc, char *argv[]){
     //img[(I + (NJ-1-J)*NI)*3 + 2] = (unsigned char)min( c.blue*255.0f, 255.0f);
 
     //MPI_Buffer buff  = (unsigned char*) calloc(3*WIDTH*HEIGHT, sizeof(char));
-    MPI_Buffer buff  = (unsigned char*) malloc(3*WIDTH*HEIGHT * sizeof(char));
+    // MPI_Buffer buff  = (unsigned char*) malloc(3*WIDTH*HEIGHT * sizeof(char));
     MPI_Status stat;
+
+    //(int J=rank*NJ/size; J<((rank+1)*NJ/size); ++J)
     
     if(rank == 0)
     {
-      for(int i = 0; i < size; i++)
+      for(int i = 1; i < size; i++)
 	{
-	  //for(int J=rank*NJ/size; J<((rank+1)*NJ/size); ++J)
-	  
-	  MPI_Recv(buff+,,MPI_UNSIGNED_CHAR,size-1,999,MPI_COMM_WORLD,&stat); //may be missing middle cases bc we only receive from 3 
+          //Parameters(data being received, quantity of data being sent,MPI_dataType,where I am sending to, Tag)	
+	  MPI_Recv( img + (3*WIDTH*HEIGHT - ( (i+1)*(HEIGHT/size)) ) , 3*WIDTH*( ((i+1)*(HEIGHT/size)) - (i*HEIGHT/size) ) , MPI_UNSIGNED_CHAR, i, 999, MPI_COMM_WORLD, &stat); 
 	}
-      
-      //Parameters(data being received, quantity of data being sent,MPI_dataType,where I am sending to, Tag)
-	
-     
     }
     else
       {
 	//Parameters(data being sent, quantity of data being sent,MPI_dataType,where I am sending to, Tag, Status)
-	MPI_Send(img,1,MPI_UNSIGNED_CHAR, 0, 999, MPI_COMM_WORLD);
+
+	 MPI_Send( img + (3*WIDTH*HEIGHT - ( (rank+1)*(HEIGHT/size) )) , 3*WIDTH*( ((rank+1)*(HEIGHT/size)) - (rank*HEIGHT/size) ) , MPI_UNSIGNED_CHAR, 0, 999, MPI_COMM_WORLD); 
+	//	MPI_Send( (img + (3*WIDTH*HEIGHT - ((rank+1)*HEIGHT/size) ) , 3*WIDTH*( ((rank+1)*HEIGHT/size) - (rank*HEIGHT/size) ) , MPI_UNSIGNED_CHAR, 0, 999, MPI_COMM_WORLD, &stat); 
+		  //	MPI_Send(img + ((rank * 3 * WIDTH * HEIGHT)/size), 1, MPI_UNSIGNED_CHAR, 0, 999, MPI_COMM_WORLD);
       }
 
     //MPI_Gather would be used to solve the extra credit. It  allows us to do the same function as MPI_Reduce but for unsigned character data types
  
-     
 
-    //...........................................................
+    //.........................................................................................................................................
      
     /* report elapsed time */
     if (rank == 0) 
@@ -175,17 +174,15 @@ int main(int argc, char *argv[]){
     
     //Q6.c: modifications to the file generation should go here:
 
-
-
-
-
-
     
     //........................................................
-    
-    sprintf(fileName, "images/image_%05d_rk%d.ppm", thetaId,rank);
-    saveppm(fileName, buff, WIDTH, HEIGHT); //changes img to buff
 
+    if(rank == 0)
+      {
+	
+    sprintf(fileName, "images/image_%05d_rk%d.ppm", thetaId,rank);
+    saveppm(fileName, img, WIDTH, HEIGHT); //changes img to buff
+      }
   }
   
   free(img);
