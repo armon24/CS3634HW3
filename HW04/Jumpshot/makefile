@@ -3,14 +3,14 @@ HDRDIR  = ./
 
 # set options for this machine
 # specify which compilers to use for c and linking
-CC	= mpiCC
-LD	= mpiCC
+CC	= mpecc
+LD	= mpecc
 
 # compiler flags to be used (set to compile with debugging on)
-CFLAGS = -I$(HDRDIR)  -Ddfloat=double -DdfloatString='"%lg"' -g -O3
+CFLAGS  = -I$(HDRDIR) -Ddfloat=double -DdfloatString='"%lg"' -g -O3 -L$MPE_LIB -llmpe -lmpe -lm -mpilog -lpthread -lstdc++ -mpicc='mpic++'
 
 # link flags to be used 
-LDFLAGS	= -g -O3
+LDFLAGS	= -g -O3 -L$MPE_LIB -llmpe -lmpe -lm -mpilog -lpthread -lstdc++ -mpicc='mpic++'
 
 # libraries to be linked in
 LIBS	=  -lm 
@@ -19,7 +19,7 @@ LIBS	=  -lm
 .SUFFIXES: .c .cu
 
 # rule for .c files
-HDR = simpleRayTracer.h
+HDR =./simpleRayTracer.h
 %.o:%.c $(HDR)
 	$(CC) $(CFLAGS) -o $*.o -c $*.c
 
