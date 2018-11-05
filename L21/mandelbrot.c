@@ -14,9 +14,9 @@ To create an image with 4096 x 4096 pixels (last argument will be used to set nu
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <omp.h>
 
 int writeMandelbrot(const char *fileName, int width, int height, float *img, int minI, int maxI);
-
 
 #define MXITER 2048
 
@@ -53,16 +53,31 @@ int testpoint(complex_t c){
 // record the  iteration counts in the count array
 void mandelbrot(int Nre, int Nim, complex_t cmin, complex_t dc, float *count){ 
 
-  for(int n=0;n<Nim;++n){
-    for(int m=0;m<Nre;++m){
-      complex_t c;
+  //2d.......................................................................
+  double startTime = omp_get_wtime();
 
-      c.r = cmin.r + dc.r*m;
-      c.i = cmin.i + dc.i*n;
+  //2b.......................................................................
+
+  int threadCount = atoi(argv[argc-1]);
+  omp_set_num_threads(threadCount);
+
+  //2c.......................................................................
+  #pragma omp parallel num_threads(threadCount)
+  {
+    for(int n=0;n<Nim;++n){
+      for(int m=0;m<Nre;++m){
+        complex_t c;
+
+        c.r = cmin.r + dc.r*m;
+        c.i = cmin.i + dc.i*n;
       
-      count[m+n*Nre] = (float) testpoint(c);
+        count[m+n*Nre] = (float) testpoint(c);
+      }
     }
   }
+
+ double estTime = omp_get_wtime()-startTime;
+  
 }
 
 int main(int argc, char **argv){
