@@ -1,0 +1,32 @@
+mandelbrot.c: In function 'mandelbrot':
+mandelbrot.c:61:26: error: 'argv' undeclared (first use in this function)
+   int threadCount = atoi(argv[argc-1]);
+                          ^
+mandelbrot.c:61:26: note: each undeclared identifier is reported only once for each function it appears in
+mandelbrot.c:61:31: error: 'argc' undeclared (first use in this function)
+   int threadCount = atoi(argv[argc-1]);
+                               ^
+/opt/torque/torque/spool/mom_priv/jobs/264994.master.cluster.SC: line 21: ./mandelbrot: No such file or directory
+/opt/torque/torque/spool/mom_priv/jobs/264994.master.cluster.SC: line 21: ./mandelbrot: No such file or directory
+/opt/torque/torque/spool/mom_priv/jobs/264994.master.cluster.SC: line 21: ./mandelbrot: No such file or directory
+/opt/torque/torque/spool/mom_priv/jobs/264994.master.cluster.SC: line 21: ./mandelbrot: No such file or directory
+/opt/torque/torque/spool/mom_priv/jobs/264994.master.cluster.SC: line 21: ./mandelbrot: No such file or directory
+/opt/torque/torque/spool/mom_priv/jobs/264994.master.cluster.SC: line 21: ./mandelbrot: No such file or directory
+/opt/torque/torque/spool/mom_priv/jobs/264994.master.cluster.SC: line 21: ./mandelbrot: No such file or directory
+/opt/torque/torque/spool/mom_priv/jobs/264994.master.cluster.SC: line 21: ./mandelbrot: No such file or directory
+/opt/torque/torque/spool/mom_priv/jobs/264994.master.cluster.SC: line 21: ./mandelbrot: No such file or directory
+/opt/torque/torque/spool/mom_priv/jobs/264994.master.cluster.SC: line 21: ./mandelbrot: No such file or directory
+/opt/torque/torque/spool/mom_priv/jobs/264994.master.cluster.SC: line 21: ./mandelbrot: No such file or directory
+/opt/torque/torque/spool/mom_priv/jobs/264994.master.cluster.SC: line 21: ./mandelbrot: No such file or directory
+/opt/torque/torque/spool/mom_priv/jobs/264994.master.cluster.SC: line 21: ./mandelbrot: No such file or directory
+/opt/torque/torque/spool/mom_priv/jobs/264994.master.cluster.SC: line 21: ./mandelbrot: No such file or directory
+/opt/torque/torque/spool/mom_priv/jobs/264994.master.cluster.SC: line 21: ./mandelbrot: No such file or directory
+/opt/torque/torque/spool/mom_priv/jobs/264994.master.cluster.SC: line 21: ./mandelbrot: No such file or directory
+/opt/torque/torque/spool/mom_priv/jobs/264994.master.cluster.SC: line 21: ./mandelbrot: No such file or directory
+/opt/torque/torque/spool/mom_priv/jobs/264994.master.cluster.SC: line 21: ./mandelbrot: No such file or directory
+/opt/torque/torque/spool/mom_priv/jobs/264994.master.cluster.SC: line 21: ./mandelbrot: No such file or directory
+/opt/torque/torque/spool/mom_priv/jobs/264994.master.cluster.SC: line 21: ./mandelbrot: No such file or directory
+/opt/torque/torque/spool/mom_priv/jobs/264994.master.cluster.SC: line 21: ./mandelbrot: No such file or directory
+/opt/torque/torque/spool/mom_priv/jobs/264994.master.cluster.SC: line 21: ./mandelbrot: No such file or directory
+/opt/torque/torque/spool/mom_priv/jobs/264994.master.cluster.SC: line 21: ./mandelbrot: No such file or directory
+/opt/torque/torque/spool/mom_priv/jobs/264994.master.cluster.SC: line 21: ./mandelbrot: No such file or directory
