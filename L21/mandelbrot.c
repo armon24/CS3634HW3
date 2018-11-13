@@ -54,12 +54,8 @@ int testpoint(complex_t c){
 void mandelbrot(int Nre, int Nim, complex_t cmin, complex_t dc, float *count){ 
 
   //2d.......................................................................
-  double startTime = omp_get_wtime();
 
   //2b.......................................................................
-
-  int threadCount = atoi(argv[argc-1]);
-  omp_set_num_threads(threadCount);
 
   //2c.......................................................................
   #pragma omp parallel num_threads(threadCount)
@@ -76,7 +72,6 @@ void mandelbrot(int Nre, int Nim, complex_t cmin, complex_t dc, float *count){
     }
   }
 
- double estTime = omp_get_wtime()-startTime;
   
 }
 
@@ -113,7 +108,15 @@ int main(int argc, char **argv){
   clock_t start = clock(); //start time in CPU cycles
 
   // compute mandelbrot set
-  mandelbrot(Nre, Nim, cmin, dc, count); 
+  // CHANGES FOR PARALLELISM, 2B and 2D, HERE
+  double startTime = omp_get_wtime();
+
+  int threadCount = atoi(argv[argc-1]);
+  omp_set_num_threads(threadCount);
+
+  mandelbrot(Nre, Nim, cmin, dc, count);
+  double estTime = omp_get_wtime()-startTime;
+  printf("elapsed = %f\n", estTime); 
 
   // replace with omp wtime 
   clock_t end = clock(); //start time in CPU cycles

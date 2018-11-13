@@ -1,0 +1,27 @@
+#!/bin/bash
+#PBS -l walltime=01:00:00
+#PBS -l nodes=1:ppn=24
+#PBS -W group_list=newriver
+#PBS -q normal_q
+#PBS -A CMDA3634
+
+#Change to the directory from which the job was submitted
+cd $PBS_O_WORKDIR
+
+#Load modules
+module purge; module load gcc mvapich2
+
+#May not be necessary if the program is already built
+gcc -fopenmp -o opi opi.c -lm
+
+#Run
+
+for i in `seq 1 24` ;
+do
+./opi $i
+
+echo "finished $i ranks"
+done
+
+exit;
+
