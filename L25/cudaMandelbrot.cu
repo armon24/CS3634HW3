@@ -83,6 +83,7 @@ int main(int argc, char **argv){
   int Nre = (argc==3) ? atoi(argv[1]): 4096;
   int Nim = (argc==3) ? atoi(argv[2]): 4096;
 
+  int N = Nre*Nim;
   // Q2b: set the number of threads per block and the number of blocks here:
 
   //HOST

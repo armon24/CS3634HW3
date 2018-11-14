@@ -1,0 +1,21 @@
+#!/bin/bash
+#PBS -l walltime=01:00:00
+#PBS -l nodes=1:ppn=24:gpus=1
+#PBS -W group_list=newriver
+#PBS -q p100_dev_q queue
+#PBS -A CMDA3634
+
+#Change to the directory from which the job was submitted
+cd $PBS_O_WORKDIR
+
+#Load modules
+module purge; module load cuda
+
+#May not be necessary if the program is already built
+nvcc -O3 -o cudaMandelbrot cudaMandelbrot.cu -lm
+
+#Run
+./cudaMandelbrot 4096 4096 
+
+exit;
+

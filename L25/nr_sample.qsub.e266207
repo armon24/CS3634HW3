@@ -1,0 +1,24 @@
+nvcc warning : The 'compute_20', 'sm_20', and 'sm_21' architectures are deprecated, and may be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).
+cudaMandelbrot.cu(199): warning: missing return statement at end of non-void function "writeMandelbrot"
+
+cudaMandelbrot.cu(74): error: calling a __host__ function("testpoint") from a __global__ function("mandelbrot") is not allowed
+
+1 error detected in the compilation of "/scratch-local/266207.master.cluster/tmpxft_000215f7_00000000-9_cudaMandelbrot.cpp1.ii".
+/opt/torque/torque/spool/mom_priv/jobs/266207.master.cluster.SC: line 18: ./cudaMandelbrot: No such file or directory
+
+Usage:
+ kill [options] <pid|name> [...]
+
+Options:
+ -a, --all              do not restrict the name-to-pid conversion to processes
+                        with the same uid as the present process
+ -s, --signal <sig>     send specified signal
+ -q, --queue <sig>      use sigqueue(2) rather than kill(2)
+ -p, --pid              print pids without signaling them
+ -l, --list [=<signal>] list signal names, or convert one to a name
+ -L, --table            list signal names and numbers
+
+ -h, --help     display this help and exit
+ -V, --version  output version information and exit
+
+For more details see kill(1).

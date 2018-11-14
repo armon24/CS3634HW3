@@ -58,7 +58,7 @@ void mandelbrot(int Nre, int Nim, complex_t cmin, complex_t dc, float *count){
   //2b.......................................................................
 
   //2c.......................................................................
-  #pragma omp parallel num_threads(threadCount)
+  #pragma omp parallel
   {
     for(int n=0;n<Nim;++n){
       for(int m=0;m<Nre;++m){
@@ -116,7 +116,7 @@ int main(int argc, char **argv){
 
   mandelbrot(Nre, Nim, cmin, dc, count);
   double estTime = omp_get_wtime()-startTime;
-  printf("elapsed = %f\n", estTime); 
+  printf("elapsed time yeet  = %f\n", estTime); 
 
   // replace with omp wtime 
   clock_t end = clock(); //start time in CPU cycles

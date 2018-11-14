@@ -8,12 +8,13 @@
 #include <stdio.h>
 #include <stdbool.h> /* Needed for boolean datatype */
 #include <math.h>
+#include <omp.h>
 
 #define min(a,b) (((a) < (b)) ? (a) : (b))
 #define max(a,b) (((a) > (b)) ? (a) : (b))
 
 /* Width and height of out image */
-#define SCALE 1
+#define SCALE 0.5*omp_get_max_threads()
 #define WIDTH  (2048*SCALE)
 #define HEIGHT (1440*SCALE)
 #define DEPTH  (2048*SCALE)
