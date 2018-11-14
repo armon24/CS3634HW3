@@ -14,6 +14,7 @@ To create an image with 4096 x 4096 pixels
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <cuda.h>
 
 int writeMandelbrot(const char *fileName, int width, int height, float *img, int minI, int maxI);
 
@@ -52,19 +53,26 @@ int testpoint(complex_t c){
 
 // perform Mandelbrot iteration on a grid of numbers in the complex plane
 // record the  iteration counts in the count array
-void mandelbrot(int Nre, int Nim, complex_t cmin, complex_t dc, float *count){ 
+__global__ void mandelbrot(int Nre, int Nim, complex_t cmin, complex_t dc, float *count){ 
 
-  // Q2c: replace this loop with a CUDA kernel
-  for(int n=0;n<Nim;++n){
-    for(int m=0;m<Nre;++m){
-      complex_t c;
+  int xthreadIndex = threadIdx.x;
+  int xblockIndex  = blockIdx.x;
+  int xthreadCount = blockDim.x;
 
-      c.r = cmin.r + dc.r*m;
-      c.i = cmin.i + dc.i*n;
+  int ythreadIndex = threadIdx.y;
+  int yblockIndex  = blockIdx.y;
+  int ythreadCount = blockDim.y;
+
+  int nX = xthreadIndex + xthreadCount*xblockIndex;
+  int nY = ythreadIndex + ythreadCount*yblockIndex;
+
+  complex_t c;
+
+  c.r = cmin.r + dc.r*nX;
+  c.i = cmin.i + dc.i*nY;
       
-      count[m+n*Nre] = (float) testpoint(c);
-    }
-  }
+  count[nX+nY*Nre] = (float) testpoint(c);
+
 }
 
 int main(int argc, char **argv){
@@ -76,7 +84,23 @@ int main(int argc, char **argv){
   int Nim = (argc==3) ? atoi(argv[2]): 4096;
 
   // Q2b: set the number of threads per block and the number of blocks here:
-  
+
+  //HOST
+  float *h_a = (float*) malloc(N*sizeof(float));
+
+  //DEVICE
+  float *c_a;
+
+  //CUDAMALLOC
+  cudaMalloc(&c_a, N*sizeof(float));
+
+  //CUDAMEMCPY
+  cudaMemcpy(c_a, h_a, N*sizeof(float), cudaMemcpyHostToDevice);
+
+  dim3 TPB(16,16,1); // Bx * By threads in thread-block
+  dim3 BPG((Nre+15)/16,(Nim+15)/16,1); // Gx * Gy grid of thread-blocks
+
+
   // storage for the iteration counts
   float *count;
   count = (float*) malloc(Nre*Nim*sizeof(float));
@@ -101,7 +125,9 @@ int main(int argc, char **argv){
   clock_t start = clock(); //start time in CPU cycles
 
   // compute mandelbrot set
-  mandelbrot(Nre, Nim, cmin, dc, count); 
+  mandelbrot <<< BPG, TPB >>> (Nre, Nim, cmin, dc, count); 
+
+  cudaMemcpy(h_a, c_a, N*sizeof(float), cudaMemcpyDeviceToHost);
   
   // copy from the GPU back to the host here
 
