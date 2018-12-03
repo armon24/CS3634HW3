@@ -11,6 +11,9 @@
 
 int main(int argc, char *argv[]){
 
+  int NThreads = atoi(argv[1]);
+  omp_set_num_threads(NThreads);
+    
   clock_t start, end;
     
   double tic,toc,elapsed;

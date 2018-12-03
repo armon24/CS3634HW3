@@ -83,12 +83,17 @@ int main(int argc, char **argv){
   int Nre = atoi(argv[1]);
   int Nim = atoi(argv[2]);
   int Nthreads = atoi(argv[3]);
-
+ 
+  //weak scaling
+  //Nim*=Nthreads; 
+ 
   // storage for the iteration counts
   float *count = (float*) malloc(Nre*Nim*sizeof(float));
 
   // Parameters for a bounding box for "c" that generates an interesting image
   const float centRe = -.759856, centIm= .125547;
+
+  //CHANGE THIS TO CREATE A VERY BRAND NEW IMAGE
   const float diam  = 0.151579;
 
   complex_t cmin; 
