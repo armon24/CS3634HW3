@@ -18,7 +18,7 @@ gcc -fopenmp -o mandelbrot mandelbrot.c -lm
 
 for i in `seq 1 24` ;
 do
-./mandelbrot  $i
+./mandelbrot 4096 4096 $i
 
 echo "finished $i ranks"
 done

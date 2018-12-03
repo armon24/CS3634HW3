@@ -1,0 +1,2 @@
+=>> PBS: job killed: walltime 3633 exceeded limit 3600
+/opt/torque/torque/spool/mom_priv/jobs/266750.master.cluster.SC: line 19: 19137 Terminated              ./mandelbrot 4096 4096 $i
