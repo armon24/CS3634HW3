@@ -32,7 +32,6 @@ int main(int argc, char *argv[]){
   cudaMemcpy(c_img, img, 3*WIDTH*HEIGHT*sizeof(unsigned char), cudaMemcpyHostToDevice);
 
   
-
   // 1. location of observer eye (before rotation)
   sensor_t sensor;
 
@@ -90,18 +89,30 @@ int main(int argc, char *argv[]){
 
     /* sort objects into grid */
     gridPopulate(grid, scene->Nshapes, shapes);
+    
+    //3.B.iv
+    cudaMemcpy(c_shapes, shapes, Nshapes*sizeof(shape_t), cudaMemcpyHostToDevice);
+    cudaMemcpy(c_bboxes, bboxes, grid->NI*grid->NJ*grid->NK*sizeof(bbox_t), cudaMemcpyHostToDevice);
 
     /* start timer */
     start = clock();
     
+    //3.c
+    //Stephen said "yep" when I asked all caps HEIGHT and WIDTH?
+    //int Nre = HEIGHT; //x first coordinate
+    // int Nim = WIDTH;  //y second coordinate
+
+    dim3 TPB(16,16,1);
+    dim3 BPG((HEIGHT+15)/16,(WIDTH+15)/16, 1);
+
     /* render scene */
-    renderKernel(WIDTH,
+    renderKernel <<< BPG, TPB >>> (WIDTH,
 		 HEIGHT,
 		 scene[0],
 		 sensor,
 		 cos(theta), 
 		 sin(theta),
-		 img);
+		 c_img);
     
     end = clock();
     
@@ -116,6 +127,10 @@ int main(int argc, char *argv[]){
       sphereUpdates(grid, dt, g, scene->Nshapes, shapes);
 
       gridPopulate(grid, scene->Nshapes, shapes);
+
+      //3.B.iv
+      cudaMemcpy(c_shapes, shapes, Nshapes*sizeof(shape_t), cudaMemcpyHostToDevice);
+      cudaMemcpy(c_bboxes, bboxes, grid->NI*grid->NJ*grid->NK*sizeof(bbox_t), cudaMemcpyHostToDevice);
     }
 
     /* save scene as ppm file */

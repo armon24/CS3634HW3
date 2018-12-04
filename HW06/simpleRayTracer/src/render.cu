@@ -15,7 +15,8 @@ __global__ void renderKernel(const int NI,
   material_t *materials = scene.materials;
   shape_t    *shapes    = scene.shapes;
   light_t    *lights    = scene.lights;
-
+ 
+  //following 3 lines need to be changed for 3c
   const int Nlights = scene.Nlights;
   const int Nmaterials = scene.Nmaterials;
   const int Nshapes    = scene.Nshapes;

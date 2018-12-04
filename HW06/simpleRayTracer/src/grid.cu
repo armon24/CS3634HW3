@@ -384,6 +384,10 @@ void gridPopulate(grid_t *grid, int Nshapes, shape_t *shapes){
   if(grid->boxContents){
     free(grid->boxContents);
     free(grid->boxStarts);
+
+    //3.B.iii
+    cudaFree(grid->boxContents);
+    cudaFree(grid->boxStarts);
   }
   
   // how many cells in grid
@@ -407,6 +411,12 @@ void gridPopulate(grid_t *grid, int Nshapes, shape_t *shapes){
   // add each shape to every box that intersects the shape's bounding box
   gridAddShapesInCellsKernel (*grid, Nshapes, shapes, boxCounters, grid->boxContents);
 
+  //create new device arrays
+  cudaMalloc(&c_boxContents, sizeof(int)*Nentries);
+  cudaMemcpy(c_boxContents, boxContents, sizeof(int)*Nentries, cudaMemcpyHostToDevice);
+
+  cudaMalloc(&c_boxStarts, sizeof(int)*Nboxes+1);
+  cudaMemcpy(c_boxStarts, boxStarts, sizeof(int)*Nboxes+1, cudaMemcpyHostToDevice);
   
   free(boxCounts);
   free(boxCounters);
