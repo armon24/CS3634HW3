@@ -5,13 +5,13 @@ __device__ bool gridRayIntersectionSearch(const ray_t r,
 			       const int Nshapes, const shape_t *shapes, const  grid_t grid,
 			       dfloat *t, int *currentShape){
   
-  int *boxContents = grid.boxContents;
-  bbox_t *bboxes = grid.bboxes;
-  int *boxStarts = grid.boxStarts;
+ // int *boxContents = grid.boxContents;
+ // bbox_t *bboxes = grid.bboxes;
+ // int *boxStarts = grid.boxStarts;
 
- // c_boxContents = grid.boxContents;
- // c_bboxes = grid.bboxes;
- // c_boxStarts = grid.boxStarts;
+  c_boxContents = grid.boxContents;
+  c_bboxes = grid.bboxes;
+  c_boxStarts = grid.boxStarts;
   
   // is start of ray in a grid cell ?
   vector_t s = r.start; // will modify ray through s

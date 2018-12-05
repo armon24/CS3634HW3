@@ -11,8 +11,11 @@
 
 int main(int argc, char *argv[]){
 
-  clock_t start, end;
-    
+  //Q4.................
+  cudaEvent_t start, end;
+  cudaEventCreate(&start);
+  cudaEventCreate(&end);
+
   double tic,toc,elapsed;
   elapsed=0;
   
@@ -105,6 +108,11 @@ int main(int argc, char *argv[]){
     dim3 TPB(16,16,1);
     dim3 BPG((HEIGHT+15)/16,(WIDTH+15)/16, 1);
 
+
+    //Q4.................................
+    cudaEventRecord(start);
+    
+
     /* render scene */
     renderKernel <<< BPG, TPB >>> (WIDTH,
 		 HEIGHT,
@@ -115,6 +123,12 @@ int main(int argc, char *argv[]){
 		 c_img);
     
     end = clock();
+
+    //Q4.................................
+    cudaEventRecord(end);
+    cudaEventSynchronize(end);
+    float milliseconds = 0;
+    cudaEventElapsedTime(&milliseconds, start, stop);
     
     dfloat dt = .025, g = 1;
     int NsubSteps= 40;
