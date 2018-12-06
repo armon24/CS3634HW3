@@ -1,0 +1,23 @@
+#!/bin/bash
+#PBS -l walltime=00:10:00
+#PBS -l nodes=1:ppn=24:gpus=1
+#PBS -W group_list=newriver
+#PBS -q P100_dev_q
+#PBS -A CMDA3634
+
+#Change to the directory from which the job was submitted
+cd $PBS_O_WORKDIR
+
+#Load modules
+module purge; module load cuda
+
+#May not be necessary if the program is already built
+nvcc -o simpleRayTracer
+#Run
+
+
+./simpleRayTracer
+
+
+exit;
+
