@@ -7,8 +7,7 @@ CC	= nvcc
 LD	= nvcc
 
 # compiler flags to be used (set to compile with debugging on)
-CFLAGS = -I$(HDRDIR) -O3 --use_fast_math -arch=sm_60 \
--dc -Ddfloat=double -DdfloatString=’"%lg"’
+CFLAGS = -I$(HDRDIR) -O3 --use_fast_math -arch=sm_60 -dc -Ddfloat=double -DdfloatString=’"%lg"’
 
 # link flags to be used 
 LDFLAGS	= -O3 -arch=sm_60

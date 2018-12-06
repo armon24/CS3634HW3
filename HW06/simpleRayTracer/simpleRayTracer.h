@@ -205,6 +205,11 @@ typedef struct{
   bbox_t  *bboxes;
   int     *boxStarts;
 
+  int *c_boxContents;
+  bbox_t *c_bboxes;
+  int *c_boxStarts;
+
+
 }grid_t;
 
 void saveppm(char *filename, unsigned char *img, int width, int height);
@@ -234,6 +239,10 @@ typedef struct{
   light_t *lights;
 
   grid_t grid;
+ 
+  material_t *c_materials;
+  shape_t *c_shapes;
+  light_t *c_lights;
   
 } scene_t;
 

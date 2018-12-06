@@ -5,9 +5,13 @@ __device__ bool gridRayIntersectionSearch(const ray_t r,
 			       const int Nshapes, const shape_t *shapes, const  grid_t grid,
 			       dfloat *t, int *currentShape){
   
-  int *boxContents = grid.boxContents;
-  bbox_t *bboxes = grid.bboxes;
-  int *boxStarts = grid.boxStarts;
+ // int *boxContents = grid.boxContents;
+ // bbox_t *bboxes = grid.bboxes;
+ // int *boxStarts = grid.boxStarts;
+
+  c_boxContents = grid.boxContents;
+  c_bboxes = grid.bboxes;
+  c_boxStarts = grid.boxStarts;
   
   // is start of ray in a grid cell ?
   vector_t s = r.start; // will modify ray through s
@@ -384,6 +388,10 @@ void gridPopulate(grid_t *grid, int Nshapes, shape_t *shapes){
   if(grid->boxContents){
     free(grid->boxContents);
     free(grid->boxStarts);
+
+    //3.B.iii
+    cudaFree(c_boxContents);
+    cudaFree(c_boxStarts);
   }
   
   // how many cells in grid
@@ -407,6 +415,12 @@ void gridPopulate(grid_t *grid, int Nshapes, shape_t *shapes){
   // add each shape to every box that intersects the shape's bounding box
   gridAddShapesInCellsKernel (*grid, Nshapes, shapes, boxCounters, grid->boxContents);
 
+  //create new device arrays
+  cudaMalloc(&c_boxContents, sizeof(int)*Nentries);
+  cudaMemcpy(c_boxContents, boxContents, sizeof(int)*Nentries, cudaMemcpyHostToDevice);
+
+  cudaMalloc(&c_boxStarts, sizeof(int)*Nboxes+1);
+  cudaMemcpy(c_boxStarts, boxStarts, sizeof(int)*Nboxes+1, cudaMemcpyHostToDevice);
   
   free(boxCounts);
   free(boxCounters);

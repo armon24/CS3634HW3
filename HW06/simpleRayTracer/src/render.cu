@@ -12,18 +12,35 @@ __global__ void renderKernel(const int NI,
 
   // unpack contents of scene
   grid_t     grid      = scene.grid;
-  material_t *materials = scene.materials;
-  shape_t    *shapes    = scene.shapes;
-  light_t    *lights    = scene.lights;
 
+ // material_t *materials = scene.materials;
+ // shape_t    *shapes    = scene.shapes;
+ // light_t    *lights    = scene.lights;
+
+  c_materials = scene.materials;
+  c_shapes    = scene.shapes;
+  c_lights    = scene.lights;
+
+  //following 3 lines need to be changed for 3c
   const int Nlights = scene.Nlights;
   const int Nmaterials = scene.Nmaterials;
   const int Nshapes    = scene.Nshapes;
 
   // (I,J) loop over pixels in image
-  for (int J = 0; J < NJ; ++J) {
-    for (int I = 0; I < NI; ++I) {
-  
+  //for (int J = 0; J < NJ; ++J) {
+  // for (int I = 0; I < NI; ++I) {
+       
+  int xthreadIndex = threadIdx.x;
+  int xblockIndex  = blockIdx.x;
+  int xthreadCount = blockDim.x;
+
+  int ythreadIndex = threadIdx.y;
+  int yblockIndex  = blockIdx.y;
+  int ythreadCount = blockDim.y;
+
+  int I = xthreadIndex + xthreadCount*xblockIndex;
+  int J = ythreadIndex + ythreadCount*yblockIndex;
+
       ray_t r;
       
       dfloat coef = 1.0;
@@ -112,6 +129,6 @@ __global__ void renderKernel(const int NI,
       img[(I + (NJ-1-J)*NI)*3 + 0] = (unsigned char)min(  c.red*255.0f, 255.0f);
       img[(I + (NJ-1-J)*NI)*3 + 1] = (unsigned char)min(c.green*255.0f, 255.0f);
       img[(I + (NJ-1-J)*NI)*3 + 2] = (unsigned char)min( c.blue*255.0f, 255.0f);
-    }
-  }
+    
+  
 }
