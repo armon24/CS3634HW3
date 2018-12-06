@@ -286,33 +286,32 @@ scene_t *sceneSetup(){
       }
     }
   }
+  
 
   //Cuda work for the scene->bboxes. Q3.b.iii
-  cudaMalloc(&c_bboxes, grid->NI*grid->NJ*grid->NK*sizeof(bbox_t)); //or grid
-  cudaMemcpy(c_bboxes, bboxes, grid->NI*grid->NJ*grid->NK*sizeof(bbox_t), cudaMemcpyHostToDevice); //or grid
+  cudaMalloc(&grid->c_bboxes, grid->NI*grid->NJ*grid->NK*sizeof(bbox_t)); //or grid
+  cudaMemcpy(grid->c_bboxes, grid->bboxes, grid->NI*grid->NJ*grid->NK*sizeof(bbox_t), cudaMemcpyHostToDevice); //or grid
 
   // capture all elements into the scene
   scene_t *scene = (scene_t*) calloc(1, sizeof(scene_t));
-  scene->Nlights  = Nlights;
   
   //Cuda work for the scene->lights array. Q3.b.iii
+  scene->Nlights  = Nlights;
   scene->lights   = lights;  
-  cudaMalloc(&c_lights, Nlights*sizeof(light_t));
-  cudaMemcpy(c_lights, lights, Nlights*sizeof(light_t), cudaMemcpyHostToDevice);
-
-  scene->Nshapes   = Nshapes;
+  cudaMalloc(&scene->c_lights, Nlights*sizeof(light_t));
+  cudaMemcpy(scene->c_lights, scene->lights, Nlights*sizeof(light_t), cudaMemcpyHostToDevice);
 
   //Stephen told me about this during 12/4 office hours
+  scene->Nshapes   = Nshapes;
   scene->shapes   = shapes;
-  cudaMalloc(&c_shapes, Nshapes*sizeof(shape_t));
-  cudaMemcpy(c_shapes, shapes, Nshapes*sizeof(shape_t));
+  cudaMalloc(&scene->c_shapes, Nshapes*sizeof(shape_t));
+  cudaMemcpy(scene->c_shapes,scene->shapes, Nshapes*sizeof(shape_t), cudaMemcpyHostToDevice);
 
-  scene->Nmaterials = Nmaterials;
- 
   //CUda work for the scene->materials array. Q3.b.iii
+  scene->Nmaterials = Nmaterials;
   scene->materials  = materials;
-  cudaMalloc(&c_materials, Nmaterials*sizeof(material_t));
-  cudaMemcpy(c_materials, materials, Nmaterials*sizeof(material_t), cudaMemcpyHostToDevice);
+  cudaMalloc(&scene->c_materials, Nmaterials*sizeof(material_t));
+  cudaMemcpy(scene->c_materials, scene->materials, Nmaterials*sizeof(material_t), cudaMemcpyHostToDevice);
 
   scene->grid = *grid;
   

@@ -13,13 +13,9 @@ __global__ void renderKernel(const int NI,
   // unpack contents of scene
   grid_t     grid      = scene.grid;
 
- // material_t *materials = scene.materials;
- // shape_t    *shapes    = scene.shapes;
- // light_t    *lights    = scene.lights;
-
-  c_materials = scene.materials;
-  c_shapes    = scene.shapes;
-  c_lights    = scene.lights;
+  material_t *materials = scene.c_materials;
+  shape_t    *shapes    = scene.c_shapes;
+  light_t    *lights    = scene.c_lights;
 
   //following 3 lines need to be changed for 3c
   const int Nlights = scene.Nlights;

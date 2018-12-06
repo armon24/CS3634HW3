@@ -18,7 +18,7 @@ int main(int argc, char *argv[]){
   cudaEventCreate(&end);
 
   //double tic,toc
-  double elapsed;
+  float elapsed;
   elapsed=0;
   
   // initialize triangles and spheres
@@ -97,7 +97,7 @@ int main(int argc, char *argv[]){
     
     //3.B.iv
     cudaMemcpy(scene->c_shapes, scene->shapes, scene->Nshapes*sizeof(shape_t), cudaMemcpyHostToDevice);
-    cudaMemcpy(scene->c_bboxes, scene->bboxes, grid->NI*grid->NJ*grid->NK*sizeof(bbox_t), cudaMemcpyHostToDevice);
+    cudaMemcpy(scene->grid.c_bboxes, scene->grid.bboxes, grid->NI*grid->NJ*grid->NK*sizeof(bbox_t), cudaMemcpyHostToDevice);
 
     /* start timer */
     // start = clock();
@@ -146,7 +146,7 @@ int main(int argc, char *argv[]){
 
       //3.B.iv
       cudaMemcpy(scene->c_shapes, scene->shapes, scene-> Nshapes*sizeof(shape_t), cudaMemcpyHostToDevice);
-      cudaMemcpy(scene->c_bboxes, scene->bboxes, grid->NI*grid->NJ*grid->NK*sizeof(bbox_t), cudaMemcpyHostToDevice);
+      cudaMemcpy(scene->grid.c_bboxes, scene->grid.bboxes, grid->NI*grid->NJ*grid->NK*sizeof(bbox_t), cudaMemcpyHostToDevice);
     }
 
     /* save scene as ppm file */
@@ -156,7 +156,9 @@ int main(int argc, char *argv[]){
     mkdir("images", S_IRUSR | S_IREAD | S_IWUSR | S_IWRITE | S_IXUSR | S_IEXEC);
     
     // write image as ppm format file
-    elapsed += end - start;
+    cudaEventElapsedTime(&elapsed, start, end);
+    elapsed /= 1000;
+
     sprintf(fileName, "images/image_%05d.ppm", thetaId);
     saveppm(fileName, img, WIDTH, HEIGHT);
   }
