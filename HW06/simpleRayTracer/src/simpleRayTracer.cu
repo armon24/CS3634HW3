@@ -12,11 +12,13 @@
 int main(int argc, char *argv[]){
 
   //Q4.................
-  cudaEvent_t start, end;
+  cudaEvent_t start;
+  cudaEvent_t  end;
   cudaEventCreate(&start);
   cudaEventCreate(&end);
 
-  double tic,toc,elapsed;
+  //double tic,toc
+  double elapsed;
   elapsed=0;
   
   // initialize triangles and spheres
@@ -94,11 +96,11 @@ int main(int argc, char *argv[]){
     gridPopulate(grid, scene->Nshapes, shapes);
     
     //3.B.iv
-    cudaMemcpy(c_shapes, shapes, Nshapes*sizeof(shape_t), cudaMemcpyHostToDevice);
-    cudaMemcpy(c_bboxes, bboxes, grid->NI*grid->NJ*grid->NK*sizeof(bbox_t), cudaMemcpyHostToDevice);
+    cudaMemcpy(scene->c_shapes, scene->shapes, scene->Nshapes*sizeof(shape_t), cudaMemcpyHostToDevice);
+    cudaMemcpy(scene->c_bboxes, scene->bboxes, grid->NI*grid->NJ*grid->NK*sizeof(bbox_t), cudaMemcpyHostToDevice);
 
     /* start timer */
-    start = clock();
+    // start = clock();
     
     //3.c
     //Stephen said "yep" when I asked all caps HEIGHT and WIDTH?
@@ -122,13 +124,13 @@ int main(int argc, char *argv[]){
 		 sin(theta),
 		 c_img);
     
-    end = clock();
+    //end = clock();
 
     //Q4.................................
     cudaEventRecord(end);
     cudaEventSynchronize(end);
     float milliseconds = 0;
-    cudaEventElapsedTime(&milliseconds, start, stop);
+    cudaEventElapsedTime(&milliseconds, start, end);
     
     dfloat dt = .025, g = 1;
     int NsubSteps= 40;
@@ -143,8 +145,8 @@ int main(int argc, char *argv[]){
       gridPopulate(grid, scene->Nshapes, shapes);
 
       //3.B.iv
-      cudaMemcpy(c_shapes, shapes, Nshapes*sizeof(shape_t), cudaMemcpyHostToDevice);
-      cudaMemcpy(c_bboxes, bboxes, grid->NI*grid->NJ*grid->NK*sizeof(bbox_t), cudaMemcpyHostToDevice);
+      cudaMemcpy(scene->c_shapes, scene->shapes, scene-> Nshapes*sizeof(shape_t), cudaMemcpyHostToDevice);
+      cudaMemcpy(scene->c_bboxes, scene->bboxes, grid->NI*grid->NJ*grid->NK*sizeof(bbox_t), cudaMemcpyHostToDevice);
     }
 
     /* save scene as ppm file */
